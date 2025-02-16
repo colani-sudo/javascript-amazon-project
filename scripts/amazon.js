@@ -42,7 +42,7 @@ products.forEach((product) => {
 
       <div class="product-spacer"></div>
 
-      <div class="added-to-cart">
+      <div class="added-to-cart js-added-to-cart-${product.id}">
         <img src="images/icons/checkmark.png">
         Added
       </div>
@@ -73,7 +73,7 @@ document.querySelectorAll('.js-add-to-cart')
 
       const productId = button.dataset.productId;
       // product.id gets converted from Kebab case to Camel Case productId
-      
+
       let matchingItem;
 
       cart.forEach((item) => {
@@ -83,14 +83,16 @@ document.querySelectorAll('.js-add-to-cart')
       });
 
       const selectedElement = document.querySelector(`.js-quantity-selector-${productId}`);
-      const selectedValue = Number(selectedElement.value);
+      const quantity = Number(selectedElement.value);
       
       if (matchingItem) {
-        matchingItem.quantity += selectedValue;
+        matchingItem.quantity += quantity;
       } else {
         cart.push({
-          productId: productId,
-          quantity: selectedValue
+          // productId: productId,
+          // quantity: selectedValue
+          productId,    // shorthand property
+          quantity
         });
       }
       
@@ -101,8 +103,31 @@ document.querySelectorAll('.js-add-to-cart')
       });
 
       document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-      
+
+
+
+      // Show Added message
+      /*
+        -Grab the initial class
+        -Clear timeout
+        -Add the temporary js class with product.id tag using .classList.add()
+        -Add temporary js class without product.id  
+        -Remove both temporary js classes using classList.remove()
+        -setTimeout() to remove message
+        -remove temporary classs
+      */
+        const addedElement = document.querySelector(`.js-added-to-cart-${productId}`)
+
+        let timeoutId;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            addedElement.classList.remove('js-added-to-cart-${product.id}');
+            addedElement.classList.remove('js-added-to-cart');
+        }, 1500);
+        addedElement.classList.add('js-added-to-cart-${product.id}');
+        addedElement.classList.add('js-added-to-cart');
     });
   });
 
+  
   
