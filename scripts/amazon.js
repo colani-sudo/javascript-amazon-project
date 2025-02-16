@@ -1,6 +1,12 @@
-import {cart} from '../data/cart.js';
+import {cart, addToCart} from '../data/cart.js';
 import {products} from '../data/products.js';
+
 // import {cart as myCart} from '../data/cart.js'; // example
+/*
+  import * as cartModule from '../data/cart.js';
+  cartModule.cart
+  cartModule.addToCart('id');
+*/
 
 let productsHTML = '';
 
@@ -71,6 +77,30 @@ Purpose: to attach any information to an element
 // Load all products to the page
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
+
+function updateCartQuantity() {
+  let cartQuantity = 0;
+
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
+
+  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+}
+
+function flashAddedMessage(productId) {
+  const addedElement = document.querySelector(`.js-added-to-cart-${productId}`)
+
+  let timeoutId;
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
+      addedElement.classList.remove('js-added-to-cart-${product.id}');
+      addedElement.classList.remove('js-added-to-cart');
+  }, 1500);
+  addedElement.classList.add('js-added-to-cart-${product.id}');
+  addedElement.classList.add('js-added-to-cart');
+}
+
 document.querySelectorAll('.js-add-to-cart')
   .forEach((button) => {
     button.addEventListener('click', () => {
@@ -78,38 +108,9 @@ document.querySelectorAll('.js-add-to-cart')
       const productId = button.dataset.productId;
       // product.id gets converted from Kebab case to Camel Case productId
 
-      let matchingItem;
-
-      cart.forEach((item) => {
-        if (productId === item.productId) {
-          matchingItem = item;
-        }
-      });
-
-      const selectedElement = document.querySelector(`.js-quantity-selector-${productId}`);
-      const quantity = Number(selectedElement.value);
+      addToCart(productId);
       
-      if (matchingItem) {
-        matchingItem.quantity += quantity;
-      } else {
-        cart.push({
-          // productId: productId,
-          // quantity: selectedValue
-          productId,    // shorthand property
-          quantity
-        });
-      }
-      
-      let cartQuantity = 0;
-
-      cart.forEach((item) => {
-        cartQuantity += item.quantity;
-      });
-
-      document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-
-
-
+      updateCartQuantity();
       // Show Added message
       /*
         -Grab the initial class
@@ -120,16 +121,8 @@ document.querySelectorAll('.js-add-to-cart')
         -setTimeout() to remove message
         -remove temporary classs
       */
-        const addedElement = document.querySelector(`.js-added-to-cart-${productId}`)
-
-        let timeoutId;
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-            addedElement.classList.remove('js-added-to-cart-${product.id}');
-            addedElement.classList.remove('js-added-to-cart');
-        }, 1500);
-        addedElement.classList.add('js-added-to-cart-${product.id}');
-        addedElement.classList.add('js-added-to-cart');
+      
+      flashAddedMessage(productId);
     });
   });
 
