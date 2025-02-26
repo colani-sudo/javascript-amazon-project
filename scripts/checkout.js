@@ -4,23 +4,31 @@ Main Idea of JavaScript:
 2. Generate the HTML
 3. Make it interactive
 */
-import {cart, removeFromCart} from '../data/cart.js';
-import {products} from '../data/products.js';
+import { cart, removeFromCart, calculateCartQuantity, saveToStorage, updateQuantity, refreshCheckout } from '../data/cart.js';
+import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';  // ./ for the current folder
 
+refreshCheckout();  // reload checkout
 
 let cartSummaryHTML = '';
+
 
 cart.forEach((cartItem) => {
   const productId = cartItem.productId;
   
-  let matchingProduct;
+  // let matchingProduct;
 
-  products.forEach((product) => {
-    if (product.id === productId) {
-      matchingProduct = product;
-    }
-  });
+  // products.forEach((product) => {
+  //   if (product.id === productId) {
+  //     matchingProduct = product;
+  //   }
+  // });
+let matchingProduct = products.find(product => product.id === productId);
+
+if (!matchingProduct) {
+  console.error(`Product with ID ${productId} not found in products array.`);
+  return;
+}
 
 cartSummaryHTML +=
   `
@@ -42,11 +50,16 @@ cartSummaryHTML +=
         </div>
         <div class="product-quantity">
           <span>
-            Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+            Quantity: <span class="quantity-label js-quantity-label-${matchingProduct.id}">${cartItem.quantity}</span>
           </span>
-          <span class="update-quantity-link link-primary">
-            Update
+          <span class="update-quantity-link link-primary js-update-quantity js-update-quantity-${matchingProduct.id}" data-product-id="${matchingProduct.id}">
+            Update  
           </span>
+          <input class="quantity-input js-quantity-input-${matchingProduct.id}">
+          <span class="save-quantity-link link-primary js-save-quantity-link-${matchingProduct.id}">
+            Save
+          </span>
+          
           <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
             Delete
           </span>
@@ -99,7 +112,8 @@ cartSummaryHTML +=
       </div>
     </div>
   </div>
-`
+`;
+
 });
 
 document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
@@ -111,6 +125,27 @@ document.querySelectorAll('.js-delete-link')
       removeFromCart(productId);
       
       const container = document.querySelector(`.js-cart-item-container-${productId}`);
-      container.remove();
+      if (container){
+        container.remove();
+      }
+
+      refreshCheckout();
     });
   });
+
+  document.querySelectorAll('.js-update-quantity')
+    .forEach((updateLink) => {
+      updateLink.addEventListener( 'click', () => {
+        const productId = updateLink.dataset.productId;
+        // console.log(productId);
+
+        // imported from ../data/cart.js
+        updateQuantity(productId);
+      });
+    });
+
+  
+
+  
+
+  

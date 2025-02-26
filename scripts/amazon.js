@@ -1,4 +1,4 @@
-import {cart, addToCart} from '../data/cart.js';
+import {cart, addToCart, calculateCartQuantity, updateCartQuantity} from '../data/cart.js';
 import {products} from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 
@@ -79,16 +79,7 @@ Purpose: to attach any information to an element
 // Load all products to the page
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-
-function updateCartQuantity() {
-  let cartQuantity = 0;
-
-  cart.forEach((cartItem) => {
-    cartQuantity += cartItem.quantity;
-  });
-
-  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-}
+updateCartQuantity();
 
 function flashAddedMessage(productId) {
   const addedElement = document.querySelector(`.js-added-to-cart-${productId}`)
@@ -112,7 +103,10 @@ document.querySelectorAll('.js-add-to-cart')
 
       addToCart(productId);
       
+      calculateCartQuantity();
+
       updateCartQuantity();
+      
       // Show Added message
       /*
         -Grab the initial class
@@ -123,7 +117,6 @@ document.querySelectorAll('.js-add-to-cart')
         -setTimeout() to remove message
         -remove temporary classs
       */
-      
       flashAddedMessage(productId);
     });
   });

@@ -1,5 +1,6 @@
 // export enables this variable to be accessed from outside of this file
 export let cart = JSON.parse(localStorage.getItem('cart'));
+// localStorage.clear();
 
 if (!cart) {
   cart = [{
@@ -51,4 +52,84 @@ export function removeFromCart(productId) {
   });
   cart = newCart;
   saveToStorage();
+}
+
+export function calculateCartQuantity() {
+  let counter = 0;
+  cart.forEach((cartItem) => {
+    counter += cartItem.quantity;
+  });
+  return counter;
+}
+
+export function updateCartQuantity() {
+  document.querySelector('.js-cart-quantity')
+    .innerHTML = calculateCartQuantity() === 0? '': calculateCartQuantity();
+}
+
+
+export function refreshCheckout() {
+  if (calculateCartQuantity() === 0) {
+    document.querySelector('.js-checkout-header-middle-section')
+    .innerHTML = `Checkout ()`;
+  } else {
+    document.querySelector('.checkout-header-middle-section')
+      .innerHTML = `Checkout ( <a class="return-to-home-link"
+            href="amazon.html">${calculateCartQuantity()} items</a>)`;
+  }
+}
+
+
+export function updateQuantity(productId) {
+
+  const inputField = document.querySelector(`.js-quantity-input-${productId}`);
+  inputField.classList.add('is-editing-quantity');
+  const saveBtn = document.querySelector(`.js-save-quantity-link-${productId}`);
+  saveBtn.classList.add('is-editing-quantity');
+
+  // Make Update and the quantity value disappear
+  const updateBtn = document.querySelector(`.js-update-quantity-${productId}`);
+  updateBtn.classList.add('js-update-quantity-link');
+  const quantityLabel = document.querySelector(`.js-quantity-label-${productId}`);
+  quantityLabel.classList.add('js-quantity-label');
+
+  // Remove existing event listeners (to prevent duplicates)
+  saveBtn.replaceWith(saveBtn.cloneNode(true));
+
+
+  // Save the new quantity value
+  const newSaveBtn = document.querySelector(`.js-save-quantity-link-${productId}`)
+  newSaveBtn.addEventListener('click', () => {
+    const newQuantity = Number(inputField.value);
+
+    if (!newQuantity) { // if no data remove input and save elements
+      inputField.classList.remove('is-editing-quantity');
+      newSaveBtn.classList.remove('is-editing-quantity');
+      updateBtn.classList.remove('js-update-quantity-link');
+      quantityLabel.classList.remove('js-quantity-label');
+      return;
+  
+    } else if (!isNaN(newQuantity) && newQuantity > 0){
+        cart.forEach((cartItem) => {
+          if (cartItem.productId === productId) {
+            cartItem.quantity = newQuantity;
+            saveToStorage();
+          }
+        });
+  
+      // Update the displayed quantity
+      document.querySelector(`.js-quantity-label-${productId}`).innerHTML = newQuantity;
+      refreshCheckout();
+  
+      // Reset the input field
+      inputField.value = '';
+      inputField.classList.remove('is-editing-quantity');
+      newSaveBtn.classList.remove('is-editing-quantity');
+      updateBtn.classList.remove('js-update-quantity-link');
+      quantityLabel.classList.remove('js-quantity-label');
+  
+    } else {
+      alert('Please enter a valid quantity.');
+    }
+  });
 }
