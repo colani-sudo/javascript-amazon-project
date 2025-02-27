@@ -4,7 +4,7 @@ Main Idea of JavaScript:
 2. Generate the HTML
 3. Make it interactive
 */
-import { cart, removeFromCart, calculateCartQuantity, saveToStorage, updateQuantity, refreshCheckout } from '../data/cart.js';
+import { cart, removeFromCart, updateQuantity, refreshCheckout, updateDeliveryOption } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';  // ./ for the current folder
 import { hello } from 'https://unpkg.com/supersimpledev@1.0.1/hello.esm.js';
@@ -15,11 +15,11 @@ import { deliveryOptions } from '../data/deliveryOptions.js';
 named export : import { hello } from '...';
 default export : import hello from '...'; on file.js the syntax is: export default filename/function name;
 */
-hello();
+// hello();
 
-const today = dayjs();
-const deliveryDate = today.add(7, 'days');
-console.log(deliveryDate.format('dddd, MMMM, D')); // go to dayjs for more options
+// const today = dayjs();
+// const deliveryDate = today.add(7, 'days');
+// console.log(deliveryDate.format('dddd, MMMM, D')); // go to dayjs for more options
 
 refreshCheckout();  // reload checkout
 
@@ -29,30 +29,30 @@ let cartSummaryHTML = '';
 cart.forEach((cartItem) => {
   const productId = cartItem.productId;
   
-  // let matchingProduct;
+  let matchingProduct;
 
-  // products.forEach((product) => {
-  //   if (product.id === productId) {
-  //     matchingProduct = product;
-  //   }
-  // });
-let matchingProduct = products.find(product => product.id === productId);
+  products.forEach((product) => {
+    if (product.id === productId) {
+      matchingProduct = product;
+    }
+  });
+// let matchingProduct = products.find(product => product.id === productId);
 
 if (!matchingProduct) {
   console.error(`Product with ID ${productId} not found in products array.`);
   return;
 }
 
-const deliveryOptionId = cartItem.deliveryOptionId;
+const deliveryOptionId = Number(cartItem.deliveryOptionId);
 
 let deliveryOption;
-
 // Get the full delivery option we want
 deliveryOptions.forEach((option) => {
   if (option.id === deliveryOptionId) {
     deliveryOption = option;
   }
 });
+
 
 const today = dayjs();
 const deliveryDate = today.add(
@@ -155,7 +155,7 @@ document.querySelectorAll('.js-delete-link')
         const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
 
         html +=
-        `<div class="delivery-option">
+        `<div class="delivery-option js-delivery-option" data-product-id="${matchingProduct.id}" data-delivery-option-id="${deliveryOption.id}">
             <input type="radio" 
             ${isChecked ? 'checked' : ''}
               class="delivery-option-input"
@@ -172,6 +172,17 @@ document.querySelectorAll('.js-delete-link')
       });
       return html;
     }
+
+    document.querySelectorAll('.js-delivery-option')
+      .forEach((element) => {
+        element.addEventListener('click', () => {
+
+          const {productId, deliveryOptionId} = element.dataset; // shorthand property
+          // access the parameters from data- attributes
+          updateDeliveryOption(productId, deliveryOptionId);
+          refreshCheckout()
+        });
+      });
 
   
 
