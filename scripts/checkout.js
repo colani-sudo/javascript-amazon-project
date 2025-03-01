@@ -159,7 +159,7 @@ function renderOrderSummary() {
       
 
       const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
-      // console.log(isChecked);
+      
 
       html +=
         `<div class="delivery-option js-delivery-option" data-product-id="${matchingProduct.id}" data-delivery-option-id="${deliveryOption.id}">
@@ -188,6 +188,7 @@ function renderOrderSummary() {
         // access the parameters from data- attributes
         updateDeliveryOption(productId, deliveryOptionId);
         refreshCheckout();
+        
         renderOrderSummary();
       });
     });
