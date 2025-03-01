@@ -5,11 +5,11 @@ Main Idea of JavaScript:
 3. Make it interactive
 */
 import { cart, removeFromCart, updateQuantity, refreshCheckout, updateDeliveryOption } from '../../data/cart.js';
-import { products } from '../../data/products.js';
+import { products, getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';  // ./ for the current folder
 import { hello } from 'https://unpkg.com/supersimpledev@1.0.1/hello.esm.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import { deliveryOptions } from '../../data/deliveryOptions.js';
+import { deliveryOptions, getDeliveryOption } from '../../data/deliveryOptions.js';
 
 /*
 named export : import { hello } from '...';
@@ -33,29 +33,17 @@ export function renderOrderSummary() {
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
     
-    let matchingProduct;
+    // const matchingProduct = getProduct(productId);
+    let matchingProduct = products.find(product => product.id === productId);
 
-    products.forEach((product) => {
-      if (product.id === productId) {
-        matchingProduct = product;
-      }
-    });
-  // let matchingProduct = products.find(product => product.id === productId);
-
-  if (!matchingProduct) {
-    console.error(`Product with ID ${productId} not found in products array.`);
-    return;
-  }
+    if (!matchingProduct) {
+      console.error(`Product with ID ${productId} not found in products array.`);
+      return;
+    }
 
   const deliveryOptionId = Number(cartItem.deliveryOptionId);
 
-  let deliveryOption;
-  // Get the full delivery option we want
-  deliveryOptions.forEach((option) => {
-    if (Number(option.id) === deliveryOptionId) {
-      deliveryOption = option;
-    }
-  });
+  let deliveryOption = getDeliveryOption(deliveryOptionId);
 
 
   const today = dayjs();
