@@ -188,13 +188,35 @@ function renderOrderSummary() {
         // access the parameters from data- attributes
         updateDeliveryOption(productId, deliveryOptionId);
         refreshCheckout();
-        
+
         renderOrderSummary();
       });
     });
   
 }
 renderOrderSummary();
+
+
+/*
+1. Update the data
+2. Regenerate all the HTML = MVC (Model - View - Controller)
+
+MVC
+=======
+Split our code into 3 parts: 
+1. Model = saves and manages the data, e.g the code in cart.js and deliveryOptions.js
+2. View = takes the data and displays it on the page, e.g checkout.js
+3. Controller = runs some code when we interact with the page, e.g checkout.js - has event listeners to control how we interact with the page
+
+                          Model ----------------- View
+                               \                  /
+                                \                /
+                                 \              /
+                                  \            /
+                                    Controller   
+We use the Model to generate the View. When we interact with the View we will run the Controller. The controller will update the Model. Lastly, we use the updated model to regenerate the View. MVC ensures that the page always matches the data
+*/
+
 
   
 
