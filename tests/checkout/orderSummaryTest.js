@@ -40,15 +40,19 @@ describe('test suite: renderOrderSummary', () => {
     renderOrderSummary();
   });
 
+  // 16.f
+  afterEach(() => {
+    // remove the HTML after the test
+    document.querySelector('.js-test-container').innerHTML = `
+    `;
+  });
+
   it('displays the cart', () => {
 
       expect(document.querySelectorAll('.js-cart-item-container').length).toEqual(2);
       expect(document.querySelector(`.js-product-quantity-${productId1}`).innerText).toContain('Quantity: 2');
       expect(document.querySelector(`.js-product-quantity-${productId2}`).innerText).toContain('Quantity: 1');
-
-      // remove the HTML after the test
-      document.querySelector('.js-test-container').innerHTML = `
-    `;
+      
     });
 
     it('removes a product', () => {
@@ -61,9 +65,6 @@ describe('test suite: renderOrderSummary', () => {
       expect(cart.length).toEqual(1);
       expect(cart[0].productId).toEqual(productId2);
 
-      // remove the HTML after the test to see the test results clearly
-      document.querySelector('.js-test-container').innerHTML = `
-    `;
     });
 });
 

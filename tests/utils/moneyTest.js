@@ -17,4 +17,8 @@ describe('test suite: formatCurrency', () => {
  it('Rounds down to the nearest cent', () => {
   expect(formatCurrency(2000.4)).toEqual('20.00');
  });
+
+ it('Rounds down to the nearest negative cent', () => {
+  expect(formatCurrency(-2000.5)).toEqual('-20.00');
+ });
 });
