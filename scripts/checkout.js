@@ -6,10 +6,30 @@ import { loadCart } from "../data/cart.js";
 // import '../data/cart-class.js';
 // import '../data/backend-practice.js';
 
+/* Async Await */
+// Async await can only be used with promises
+async function loadPage() { // async = makes a function return a promise
+  // console.log('load page'); // we use await inside an async function
+  await loadProductsFetch(); // await substitutes the .then() use
+
+  await new Promise((resolve) => {
+    loadCart(() => {
+      resolve();
+    });
+  });
+
+  renderOrderSummary();
+  renderPaymentSummary();          // await - writes asynchronous code like normal code
+}
+loadPage().then(() => {
+  console.log('next step');
+});
+
 /*
 We can run multiple promises simultaneously:
   Promise.all() let us run multiple promises simultaneously and wait for all of them to finish 
 */
+/*
 Promise.all([
   // new Promise((resolve) => { // resolve is a function like done() in jasmine
   //   loadProducts(() => {  // we run  the function and wait
@@ -28,6 +48,8 @@ Promise.all([
   renderOrderSummary();
   renderPaymentSummary();
 });
+
+*/
 
 /*
 // ---Using a promise----flattens the code
@@ -67,3 +89,5 @@ new Promise((resolve) => {  --->  loadProducts(() => {  ---> resolve(); ---> //n
 */
 // Promises allow JavaScript to do multiple things at the same time
 
+/* Async Await is a shortcut for promises
+*/
