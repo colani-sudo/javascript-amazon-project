@@ -1,7 +1,8 @@
 import {cart, addToCart, calculateCartQuantity, updateCartQuantity} from '../data/cart.js';
-import {products} from '../data/products.js';
+import {products,loadProducts} from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 
+loadProducts(renderProductsGrid);
 
 // import {cart as myCart} from '../data/cart.js'; // example
 /*
@@ -10,10 +11,12 @@ import { formatCurrency } from './utils/money.js';
   cartModule.addToCart('id');
 */
 
-let productsHTML = '';
+function renderProductsGrid() {
 
-// The products variable will be coming from products.js
-products.forEach((product) => {
+  let productsHTML = '';
+
+  // The products variable will be coming from products.js
+  products.forEach((product) => {
   productsHTML += `
     <div class="product-container">
       <div class="product-image-container">
@@ -67,23 +70,23 @@ products.forEach((product) => {
       </button>
     </div>
   `;
-});
+  });
 
-/* 
--------Syntax rules for a data attribute---------
-- is an HTML attribute
-- have to start with "data-", e.g data-product-name=""
-- then give it any name
-- the attributes name is converted from Kebab to Camel case
-Purpose: to attach any information to an element
-*/
+  /* 
+  -------Syntax rules for a data attribute---------
+  - is an HTML attribute
+  - have to start with "data-", e.g data-product-name=""
+  - then give it any name
+  - the attributes name is converted from Kebab to Camel case
+  Purpose: to attach any information to an element
+  */
 
-// Load all products to the page
-document.querySelector('.js-products-grid').innerHTML = productsHTML;
+  // Load all products to the page
+  document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-updateCartQuantity();
+  updateCartQuantity();
 
-function flashAddedMessage(productId) {
+  function flashAddedMessage(productId) {
   const addedElement = document.querySelector(`.js-added-to-cart-${productId}`)
 
   let timeoutId;
@@ -94,9 +97,9 @@ function flashAddedMessage(productId) {
   }, 1500);
   addedElement.classList.add('js-added-to-cart-${product.id}');
   addedElement.classList.add('js-added-to-cart');
-}
+  }
 
-document.querySelectorAll('.js-add-to-cart')
+  document.querySelectorAll('.js-add-to-cart')
   .forEach((button) => {
     button.addEventListener('click', () => {
 
@@ -122,6 +125,6 @@ document.querySelectorAll('.js-add-to-cart')
       flashAddedMessage(productId);
     });
   });
-
+}
   
   

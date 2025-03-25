@@ -75,6 +75,27 @@ const object3 = {
 object3.method();
 */
 
+export let products = [];
+
+// Callback - a function to run in the future
+export function loadProducts(fun) { // fun is a callback function 
+  const xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', () => {
+    products = JSON.parse(xhr.response).map((productDetails) => {
+      if (productDetails.type === 'clothing') {
+        return new Clothing(productDetails);
+      }
+      return new Product(productDetails);
+    });
+
+    console.log('load products');
+    fun();
+  });
+  xhr.open('GET', 'https://supersimplebackend.dev/products');
+  xhr.send();
+}
+
+/*
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -740,7 +761,7 @@ export const products = [
   }
   return new Product(productDetails);
 }); // Converting a regular products array objects into objects of Product class array
-
+*/
 
 export function getProduct(productId) {
   let matchingProduct;
