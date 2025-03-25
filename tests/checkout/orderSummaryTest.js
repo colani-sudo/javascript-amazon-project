@@ -1,6 +1,6 @@
 import { renderOrderSummary } from "../../scripts/checkout/orderSummary.js";
 import { loadFromStorage, cart } from "../../data/cart.js";
-import { loadProducts } from "../../data/products.js";
+import { loadProducts, loadProductsFetch } from "../../data/products.js";
 
 // Integration test - test how our page behaves
 // Testing a page, we test for: 1. How the page looks 2. How the page behaves 
@@ -18,10 +18,9 @@ describe('test suite: renderOrderSummary', () => {
   */
 
      beforeAll((done) => {  // done() - waits for loadProducts() to finish
-      loadProducts(() => {
-        done();   // ensures products are loaded first
+      loadProductsFetch().then(() => {
+        done();
       });
-      
      });
   beforeEach(() => {  // a beforeEach hook, done() can also be used here
     spyOn(localStorage, 'setItem');

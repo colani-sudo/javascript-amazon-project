@@ -1,6 +1,6 @@
 import { renderOrderSummary } from "./checkout/orderSummary.js";
 import { renderPaymentSummary } from "./checkout/paymentSummary.js";
-import { loadProducts } from "../data/products.js";
+import { loadProducts, loadProductsFetch } from "../data/products.js";
 import { loadCart } from "../data/cart.js";
 
 // import '../data/cart-class.js';
@@ -11,12 +11,13 @@ We can run multiple promises simultaneously:
   Promise.all() let us run multiple promises simultaneously and wait for all of them to finish 
 */
 Promise.all([
-  new Promise((resolve) => { // resolve is a function like done() in jasmine
-    loadProducts(() => {  // we run  the function and wait
-      resolve('value1'); // we call resolve to finish and go to the next step
-    });
+  // new Promise((resolve) => { // resolve is a function like done() in jasmine
+  //   loadProducts(() => {  // we run  the function and wait
+  //     resolve('value1'); // we call resolve to finish and go to the next step
+  //   });
   
-  }),
+  // }),
+  loadProductsFetch(),  // we replaced the above promise with the fetch() function
   new Promise((resolve) => {
     loadCart(() => {
       resolve();
