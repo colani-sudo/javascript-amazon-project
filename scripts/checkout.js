@@ -10,14 +10,21 @@ import { loadCart } from "../data/cart.js";
 // Async await can only be used with promises
 async function loadPage() { // async = makes a function return a promise
   // console.log('load page'); // we use await inside an async function
-  await loadProductsFetch(); // await substitutes the .then() use
+  try {   
+    // throw 'error';       // to manually create an error
+    await loadProductsFetch(); // await substitutes the .then() use
 
-  await new Promise((resolve) => {
-    loadCart(() => {
-      resolve();
+    await new Promise((resolve, reject) => {    // reject creates an error in the future
+        // throw 'error2';  // another error
+      loadCart(() => {
+        // reject('error3');   // to throw an error in the future
+        resolve();
+      });
     });
-  });
-
+  } catch(error) {
+    console.log(`Unexpected error. Please try again later.${error}`);
+  }
+  
   renderOrderSummary();
   renderPaymentSummary();          // await - writes asynchronous code like normal code
 }
